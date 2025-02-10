@@ -204,7 +204,6 @@ defmodule Ecto.Adapters.MyXQL do
     database = Keyword.fetch!(opts, :database)
 
     opts = Keyword.delete(opts, :database)
-    charset = opts[:charset] || "utf8mb4"
 
     check_existence_command =
       "SELECT TRUE FROM information_schema.schemata WHERE schema_name = '#{database}'"
@@ -215,8 +214,7 @@ defmodule Ecto.Adapters.MyXQL do
 
       _ ->
         create_command =
-          ~s(CREATE DATABASE `#{database}` DEFAULT CHARACTER SET = #{charset})
-          |> concat_if(opts[:collation], &"DEFAULT COLLATE = #{&1}")
+          ~s(CREATE DATABASE `#{database}`)
 
         case run_query(create_command, opts) do
           {:ok, _} ->
